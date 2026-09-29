@@ -29,15 +29,45 @@ import { supabase } from '@/lib/supabase';
 import type { CarWithListings, Listing } from '@/types';
 
 function formatPrice(price: number): string {
-  return new Intl.NumberFormat('bg-BG', {
+  return new Intl.NumberFormat('de-DE', {
     style: 'currency',
-    currency: 'BGN',
+    currency: 'EUR',
     maximumFractionDigits: 0,
   }).format(price);
 }
 
 function formatMileage(km: number): string {
   return new Intl.NumberFormat('bg-BG').format(km) + ' km';
+}
+
+const mobileBgMakeSlug: Record<string, string> = {
+  'Audi': 'audi',
+  'BMW': 'bmw',
+  'Chevrolet': 'chevrolet',
+  'Citroen': 'citroen',
+  'Dacia': 'dacia',
+  'Fiat': 'fiat',
+  'Ford': 'ford',
+  'Honda': 'honda',
+  'Hyundai': 'hyundai',
+  'Jeep': 'jeep',
+  'Kia': 'kia',
+  'Mazda': 'mazda',
+  'Mercedes-Benz': 'mercedes-benz',
+  'Nissan': 'nissan',
+  'Opel': 'opel',
+  'Peugeot': 'peugeot',
+  'Porsche': 'porsche',
+  'Renault': 'renault',
+  'Skoda': 'skoda',
+  'Tesla': 'tesla',
+  'Toyota': 'toyota',
+  'Volkswagen': 'vw',
+};
+
+function getMobileBgSearchUrl(make: string): string {
+  const slug = mobileBgMakeSlug[make] ?? make.toLowerCase().replace(/\s+/g, '-');
+  return `https://www.mobile.bg/obiavi/avtomobili-dzhipove/${slug}`;
 }
 
 const conditionColors: Record<string, string> = {
@@ -585,9 +615,9 @@ export default function App() {
                                       </p>
                                     )}
                                   </div>
-                                  {listing.dealership?.website && (
+                                  {(
                                     <a
-                                      href={listing.dealership.website}
+                                      href={getMobileBgSearchUrl(car.make)}
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       className={`flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-lg transition-all whitespace-nowrap ${
